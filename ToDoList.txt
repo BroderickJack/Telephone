@@ -1,0 +1,5 @@
+Telephone To-Do
+	- Print out message statistics
+	- Add the information of the server
+	- Port endpoint handling 
+		- There could be a different port for source and destination??
