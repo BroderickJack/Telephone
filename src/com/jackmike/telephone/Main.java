@@ -11,9 +11,9 @@ public class Main {
 
 	public static void main(String[] args) {
 		// random stuff v
-		System.out.println("This is a test");
+//		System.out.println("This is a test");
 		int len = args.length;
-		System.out.println("Number of args: " + len);
+//		System.out.println("Number of args: " + len);
 		// end of random stuff ^
 		
 		// format of args: <originator> <sourceIP> <destIP> <port>
@@ -22,13 +22,14 @@ public class Main {
 		boolean originator = false;
 		String sourceIP = "-";
 		String sourceEndpoint, sourceHost;
-		int sourcePort;
-		String destEndpoint, destHost;
+		int sourcePort = -1;
+		String destEndpoint;
+		String destHost = "";
 		String destIP = "-";
-		int destPort;
+		int destPort = -1;
 		int port = 0;
 		
-		if(args.length == 4) {
+		if(args.length == 3) {
 			originator = ((args[0].equals("0"))) ? false : true;
 			sourceEndpoint = args[1];
 			// Parse the sourceIP - Could be either just a host or IP and port
@@ -44,22 +45,35 @@ public class Main {
 				sourcePort = -1; // This will force the client to use the default port
 			}
 			
-			// We must now parse the host 
-			// * Do we want parsing the <endpoint> to be it's own method that returns either
-			// a Client or a Server object??
-			String regExp = "\\d{1,3}.\\d{1,3}.\\d{1,3}.\\d{1,3}";
-			boolean b = Pattern.matches(regExp,  sourceHost);
+//			// We must now parse the host 
+//			// * Do we want parsing the <endpoint> to be it's own method that returns either
+//			// a Client or a Server object??
+//			String regExp = "\\d{1,3}.\\d{1,3}.\\d{1,3}.\\d{1,3}";
+//			boolean b = Pattern.matches(regExp,  sourceHost);
+//			
+//			if (b) {
+//				// It is an IPV4 address
+//				System.out.println("Source Host: IPV4");
+//			}
+//			else
+//				System.out.println("Source Host: Not IPV4");
 			
-			if (b) {
-				// It is an IPV4 address
-				System.out.println("Source Host: IPV4");
+			// Parse the DESTINATION end point
+			destEndpoint = args[2];
+			// Could be either just a host or IP and port
+			// Host could be IPV4 address or a host name
+			if ( destEndpoint.contains(":")) {
+				// Then there is a port
+				String[] destInfo = destEndpoint.split(":");
+				destHost = destInfo[0];
+				destPort = Integer.parseInt(destInfo[1]);
 			}
-			else
-				System.out.println("Source Host: Not IPV4");
-			
-			
-			destIP = args[2];
-			port = Integer.parseInt(args[3]);
+			else {
+				destHost = destEndpoint;
+				destPort = -1; // This will force the client to use the default port
+			}
+			destIP = destHost;
+//			port = Integer.parseInt(args[3]);
 		}
 		else
 			validArgs = false;
@@ -69,13 +83,13 @@ public class Main {
 		Server s1;
 		if(originator)
 			try {
-				c1 = new Client(sourceIP, port);
+				c1 = new Client(destHost, destPort);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		else
 			try {
-				s1 = new Server(port);
+				s1 = new Server(sourcePort);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -87,7 +101,7 @@ public class Main {
 	
 	public static boolean isIPV4( String host ) {
 		// This method returns true if the argument "host" is an IPV4 address
-		// It retursn false if host is a <hostname>
+		// It returns false if host is a <hostname>
 		
 		return false;
 	}

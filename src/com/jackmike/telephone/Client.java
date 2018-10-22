@@ -17,6 +17,10 @@ public class Client {
 		System.out.println("CLEINT");
 		System.out.println("Creating socket to '" + host + "' on port " + portNum);
 
+		// If port number was not specified
+		if (portNum == -1 )
+			portNum = protocol.getDefaultPort();
+		
 		Socket socket = new Socket(host, portNum);
 
 		BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));

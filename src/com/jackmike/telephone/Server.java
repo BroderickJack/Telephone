@@ -20,6 +20,11 @@ public class Server {
 		
 		Socket socket = serverSocket.accept();
 		
+		// Print the info of the client
+		// Do we need to check the source hostname?
+		System.out.println("Accept connection from client: " + socket.getRemoteSocketAddress().toString());
+
+		
 		OutputStream os = socket.getOutputStream();
 		PrintWriter pw = new PrintWriter(os, true);
 		
@@ -31,7 +36,7 @@ public class Server {
 		pw.println("HELLO " + protocol.getVersion());
 		System.out.println("Server: HELLO " + protocol.getVersion());
 		
-		// Check to make sure the client sent the correct handshake pack
+		// Check to make su re the client sent the correct handshake pack
 		String clientResponse = br.readLine();
 		System.out.println("Client: " + clientResponse);
 		String[] output = clientResponse.split(" ");

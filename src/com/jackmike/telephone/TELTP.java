@@ -15,5 +15,5 @@ public class TELTP {
 	}
 
 	public String getVersion() { return version; }
-
+	public int getDefaultPort() { return defaultPort; }
 }
