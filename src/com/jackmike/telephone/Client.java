@@ -14,6 +14,7 @@ public class Client {
 		// Create an instance of TELTP object that maintains all protocol information
 		TELTP protocol = new TELTP(); 
 
+		System.out.println("CLEINT");
 		System.out.println("Creating socket to '" + host + "' on port " + portNum);
 
 		Socket socket = new Socket(host, portNum);

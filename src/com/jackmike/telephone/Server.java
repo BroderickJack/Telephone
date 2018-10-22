@@ -12,7 +12,7 @@ public class Server {
 	
 	
 	public Server(int portNum) throws IOException {
-
+		System.out.println("SERVER");
 		TELTP protocol = new TELTP();
 		
 		System.out.println("Creating server socket on port " + portNum);
@@ -33,6 +33,7 @@ public class Server {
 		
 		// Check to make sure the client sent the correct handshake pack
 		String clientResponse = br.readLine();
+		System.out.println("Client: " + clientResponse);
 		String[] output = clientResponse.split(" ");
 		
 		boolean badResponse = false;
