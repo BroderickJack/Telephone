@@ -13,6 +13,8 @@ public class Client {
 
 		// Create an instance of TELTP object that maintains all protocol information
 		TELTP protocol = new TELTP(); 
+		
+		BufferedReader userInputBR = new BufferedReader(new InputStreamReader(System.in));
 
 		System.out.println("CLEINT");
 		System.out.println("Creating socket to '" + host + "' on port " + portNum);
@@ -58,11 +60,19 @@ public class Client {
 		}
 		
 		// ------------- END OF HANDSHAKE -----------------------------
+		System.out.print("Client: ");
+		String userInput = userInputBR.readLine();
+		while ( !userInput.equals("QUIT") ) {
+			out.println(userInput);
+			System.out.print("Client: ");
+			userInput = userInputBR.readLine(); 
+		}
+		
 		
 		// -------------- TERMINATION ------------------------
 //		System.out.println("Ending the connection");
 		out.println("QUIT");
-		System.out.println("Client: QUIT");
+		//System.out.println("Client: QUIT");
 		serverResponse = br.readLine();
 		System.out.println("Server: " + serverResponse);
 		
