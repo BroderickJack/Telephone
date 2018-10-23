@@ -1,4 +1,5 @@
 package com.jackmike.telephone;
+import java.util.Vector;
 
 public class TELTP {
 	private final String version = "1.7";
@@ -11,8 +12,9 @@ public class TELTP {
 	// These are the header data values
 	private String fromHost, toHost, author;
 	private String sendingTimestamp, messageCSum, headersCSum;
-	private String warning, transform;
+	private String transform;
 	private int messageId, hop;
+	private Vector<String> warnings; // This is a list of all of the warning that have been added
 	
 	
 	public TELTP() {
@@ -32,5 +34,5 @@ public class TELTP {
 	public void setHop(int currentHop) { this.hop = currentHop + 1; } // Update the hop by 1
 	public void setMessageId(int messageId) { this.messageId = messageId; }
 	public void setAuthor(String oldAuthors) { this.author = oldAuthors + "/" + this.currentAuthor; }
-
+	public void addWarning(String newWarning) { this.warnings.addElement(newWarning); }
 }

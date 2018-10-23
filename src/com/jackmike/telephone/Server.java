@@ -139,14 +139,18 @@ public class Server {
 			case "Hop":
 				System.out.println("The current hop is: " + splitHeader[1].trim());
 				protocol.setHop(Integer.parseInt(splitHeader[1].trim())); // Trim removes leading and extra " "
+				System.out.println("The hop is now: " + protocol.getHop());
+				break;
 			case "MessageId":
 				System.out.println("The mssaageId is: " + splitHeader[1].trim());
 				protocol.setMessageId(Integer.parseInt(splitHeader[1].trim()));
+				break;
 			case "Author":
 				String oldAuthors = splitHeader[1];
 				System.out.println("Old Authors: " + oldAuthors);
 				protocol.setAuthor(oldAuthors);
 				System.out.println("New Authors: " + protocol.getAuthor());
+				break;
 		}
 	}
 }

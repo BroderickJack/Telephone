@@ -101,8 +101,7 @@ public class Main {
 	
 	public static boolean isIPV4( String host ) {
 		// This method returns true if the argument "host" is an IPV4 address
-		// It returns false if host is a <hostname>
-		
+		// It returns false if host is a <hostname>	
 		return false;
 	}
 
