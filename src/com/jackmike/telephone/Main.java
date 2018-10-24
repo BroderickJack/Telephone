@@ -84,15 +84,22 @@ public class Main {
 		if(originator)
 			try {
 				c1 = new Client(destHost, destPort);
+				c1.startClient();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		else
-			try {
-				s1 = new Server(sourcePort);
-			} catch (IOException e) {
-				e.printStackTrace();
+		else {
+			while(true) {
+				try {
+					s1 = new Server(sourcePort);
+					s1.startServer();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				// Now we need to get the protocol information about the old message/
+				// Switch to a client and pass the message to the next person in the line 
 			}
+		}
 		
 		
 		

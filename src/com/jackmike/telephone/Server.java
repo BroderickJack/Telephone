@@ -7,13 +7,23 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import com.jackmike.telephone.TELTP;
+import java.util.Vector;
 
 public class Server {
-	public static boolean VERBOSE = true;
-	
+	private static boolean VERBOSE = true;
+	private int portNum;
+	private Vector<TELTPMessage> messages;
+	private TELTPMessage currentMessage;
+		
 	public Server(int portNum) throws IOException {
+		this.portNum = portNum;
+
+	}
+	
+	public void startServer() throws IOException {
 		System.out.println("SERVER");
 		TELTP protocol = new TELTP();
+		
 		String data1 = ""; 
 		String data2 = ""; 
 		String data3 = "";
@@ -120,6 +130,7 @@ public class Server {
 					
 			}
 		
+			serverSocket.close();
 
 //			BufferedReader userInputBR = new BufferedReader(new InputStreamReader(System.in));
 //			String userInput = userInputBR.readLine();
@@ -135,7 +146,7 @@ public class Server {
 		}
 	}
 	
-	private static int parseHeader(String header, TELTP protocol) {
+	private int parseHeader(String header, TELTP protocol) {
 		// This method takes the current line being read and returns updates the TELTP class to have 
 		// the information corresponding to the headers in the message
 		// 1. Split the string at : because the header is in the form
@@ -148,19 +159,34 @@ public class Server {
 		
 		switch (headerName) {
 			case "Hop":
-				System.out.println("The current hop is: " + splitHeader[1].trim());
-				protocol.setHop(Integer.parseInt(splitHeader[1].trim())); // Trim removes leading and extra " "
+				int hop = Integer.parseInt(splitHeader[1].trim());
+				System.out.println("The current hop is: " + hop);
+				protocol.setHop(hop); // Trim removes leading and extra " "
 				System.out.println("The hop is now: " + protocol.getHop());
+				
+				// Update the current message
+				this.currentMessage.setHop(hop);
 				return 1;
 			case "MessageId":
-				System.out.println("The mssaageId is: " + splitHeader[1].trim());
-				protocol.setMessageId(Integer.parseInt(splitHeader[1].trim()));
+				// If the current message is not void, append it to the messages vector
+				this.messages.addElement(this.currentMessage);
+				
+				int messageID = Integer.parseInt(splitHeader[1].trim());
+				
+				// We will now create a new current message
+				System.out.println("The mssaageId is: " + messageID);
+				protocol.setMessageId(messageID);
+				// Create a "current message"
+				this.currentMessage = new TELTPMessage(messageID);
 				return 1;
 			case "Author":
 				String oldAuthors = splitHeader[1];
 				System.out.println("Old Authors: " + oldAuthors);
 				protocol.setAuthor(oldAuthors);
 				System.out.println("New Authors: " + protocol.getAuthor());
+				
+				// Update the current message
+				this.currentMessage.setAuthor(oldAuthors);
 				return 1;
 			case "MessageChecksum":
 				String checksum = splitHeader[1];
