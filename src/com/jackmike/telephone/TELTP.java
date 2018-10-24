@@ -6,6 +6,7 @@ public class TELTP {
 	private final int defaultPort = 12345;
 	private final String currentAuthor = "MikeJack";
 	private String program = "Java/8/Update/191";
+	private String system = "Mac OS Mojave10.14";
 	
 	private int port;
 	

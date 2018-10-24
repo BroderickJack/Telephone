@@ -17,6 +17,8 @@ public class Server {
 		String data1 = ""; 
 		String data2 = ""; 
 		String data3 = "";
+		String body = ""; // The body of the message that we will continually build
+		int parseRespone = -1; // The response of the parse method will be this (1-Header, 0-Part of the body)
 		
 		System.out.println("Creating server socket on port " + portNum);
 		ServerSocket serverSocket = new ServerSocket(portNum);
@@ -101,14 +103,20 @@ public class Server {
 									readingData = false;
 								}
 								else
-									parseHeader(data3, protocol);
+									if(parseHeader(data3, protocol) == 0)
+										body += data3 + "\n"; // We must append the line to the body of the message
 							}
 							else
-								parseHeader(data2, protocol);
+								if(parseHeader(data2, protocol) == 0)
+									body += data2 + "\n";
 						}
 						// Parse all three of the strings read in order
-						parseHeader(data1, protocol);
+						if( parseHeader(data1, protocol) == 0)
+							body += data1 + "\n";
 					}
+					
+					// Does the message body have to come after the headers??
+					System.out.println("Message Body: " + body);
 					
 			}
 		
@@ -127,11 +135,14 @@ public class Server {
 		}
 	}
 	
-	private static void parseHeader(String header, TELTP protocol) {
+	private static int parseHeader(String header, TELTP protocol) {
 		// This method takes the current line being read and returns updates the TELTP class to have 
 		// the information corresponding to the headers in the message
 		// 1. Split the string at : because the header is in the form
 		// 		<Header>: <value>
+		// RETURN
+		// 	- 0: If the "header" is not a header but is a part of the body of the message
+		//	- 1: If the "header" is actually a header
 		String[] splitHeader = header.split(":");
 		String headerName = splitHeader[0];
 		
@@ -140,17 +151,23 @@ public class Server {
 				System.out.println("The current hop is: " + splitHeader[1].trim());
 				protocol.setHop(Integer.parseInt(splitHeader[1].trim())); // Trim removes leading and extra " "
 				System.out.println("The hop is now: " + protocol.getHop());
-				break;
+				return 1;
 			case "MessageId":
 				System.out.println("The mssaageId is: " + splitHeader[1].trim());
 				protocol.setMessageId(Integer.parseInt(splitHeader[1].trim()));
-				break;
+				return 1;
 			case "Author":
 				String oldAuthors = splitHeader[1];
 				System.out.println("Old Authors: " + oldAuthors);
 				protocol.setAuthor(oldAuthors);
 				System.out.println("New Authors: " + protocol.getAuthor());
-				break;
+				return 1;
+			case "MessageChecksum":
+				String checksum = splitHeader[1];
+			default:
+				// This is a part of the body of the message
+				return 0;
+				// This is now the message 
 		}
 	}
 }
