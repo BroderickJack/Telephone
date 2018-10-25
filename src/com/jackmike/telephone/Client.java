@@ -166,7 +166,7 @@ public class Client {
 	
 	public void sendMessage(TELTP m) throws IOException {
 		m.sendMessage(out); // Have the protocol send the message
-		endConnection();
+		endConnection(); // End the connection 
 		// --  BODY   --
 	}
 }

@@ -89,15 +89,16 @@ public class Main {
 			try {
 				TELTP m = new TELTP(destPort);
 				m.setMessageId(messageId);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			try {
+				m.setBody("This is the message");
+
+				// Create the client and send the message
 				c1 = new Client(destHost, destPort);
 				c1.startClient();
+				c1.sendMessage(m);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+
 		}
 		else {
 			while(true) {

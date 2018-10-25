@@ -28,7 +28,7 @@ public class TELTP {
 	private String transform;
 	private int messageId, hop;
 	private String body;
-	private Vector<String> warnings; // This is a list of all of the warning that have been added
+	private Vector<String> warnings = new Vector<String>(); // This is a list of all of the warning that have been added
 	
 	
 	public TELTP() {
@@ -56,6 +56,7 @@ public class TELTP {
 	public void setBody(String body) { this.body = body; }
 	
 	public void sendMessage( PrintWriter pw ) {
+		System.out.println("Here");
 		pw.println("Hop: " + hop);
 		pw.println("MessageId: " + messageId);
 		pw.println("FromHost: " + fromHost);
@@ -63,7 +64,7 @@ public class TELTP {
 		pw.println("System: " + system);
 		pw.println("Program: " + program);
 		pw.println("Author: " + author);
-		pw.println("SendingTimestamp" + getCurrentTime());
+		pw.println("SendingTimestamp: " + getCurrentTime());
 		pw.println("MessageChecksum: " + getMessageChecksum());
 		for(int i = 0; i < warnings.size(); i++) {
 			pw.println("Warnging: " + warnings);
