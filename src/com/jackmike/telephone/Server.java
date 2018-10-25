@@ -87,7 +87,8 @@ public class Server {
 				case "QUIT": pw.println("GOODBYE");
 							 System.out.println("Server: GOODBYE");
 							 pw.close();
-							 System.exit(1);
+//							 System.exit(1);
+							 return;
 				case "DATA": 
 //					if (VERBOSE)
 //						System.out.println("Here");
@@ -134,7 +135,6 @@ public class Server {
 					
 			}
 		
-			serverSocket.close();
 
 //			BufferedReader userInputBR = new BufferedReader(new InputStreamReader(System.in));
 //			String userInput = userInputBR.readLine();
@@ -148,6 +148,9 @@ public class Server {
 			//socket.close();
 
 		}
+		socket.close();
+		System.out.println("Closing the socket");
+
 	}
 	
 	private int parseHeader(String header, TELTP protocol) {

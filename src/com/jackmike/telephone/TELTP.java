@@ -41,6 +41,7 @@ public class TELTP {
         InetAddress inetAddress = InetAddress.getLocalHost();
 //        System.out.println("IP Address:- " + inetAddress.getHostAddress());
 		this.fromHost = inetAddress.getHostAddress() + ":" + port;
+		this.author = currentAuthor;
 	}
 
 	public String getVersion() { return version; }
@@ -54,23 +55,44 @@ public class TELTP {
 	public void setAuthor(String oldAuthors) { this.author = oldAuthors + "/" + this.currentAuthor; }
 	public void addWarning(String newWarning) { this.warnings.addElement(newWarning); }
 	public void setBody(String body) { this.body = body; }
+	public void setToHost(String toHost) { this.toHost = toHost; }
 	
 	public void sendMessage( PrintWriter pw ) {
-		System.out.println("Here");
+		pw.println("DATA:");
+		System.out.println("Client: DATA:");
 		pw.println("Hop: " + hop);
+		System.out.println("Client: Hop: " + hop);
+		System.out.println("Client: MessageId: " + messageId);
 		pw.println("MessageId: " + messageId);
+		System.out.println("Client: FromHost: " + fromHost);
 		pw.println("FromHost: " + fromHost);
+		System.out.println("Client: ToHost: " + toHost);
 		pw.println("ToHost: " + toHost);
+		System.out.println("Client: System: " + system);
 		pw.println("System: " + system);
+		System.out.println("Client: Program: " + program);
 		pw.println("Program: " + program);
+		System.out.println("Client: Author: " + author);
 		pw.println("Author: " + author);
+		System.out.println("Client: SendingTimestamp: " + getCurrentTime());
 		pw.println("SendingTimestamp: " + getCurrentTime());
+		System.out.println("Client: MessageChecksum: " + getMessageChecksum());
 		pw.println("MessageChecksum: " + getMessageChecksum());
 		for(int i = 0; i < warnings.size(); i++) {
-			pw.println("Warnging: " + warnings);
+			pw.println("Warning: " + warnings);
+			System.out.println("Client: Warning: " + warnings);
 		}
 	
-		pw.println("Transform: " + transform);
+		if( transform != null) {
+			pw.println("Transform: " + transform);
+			System.out.println("Client: Transform: " + transform);
+		}
+		pw.println(this.body); // Send the body of the message
+		System.out.println("Client: " + this.body); // Send the body of the message
+		pw.println("\n.\n");
+		System.out.println("Client: \nClient: . \nClient:");
+		
+		
 		
 	}
 	

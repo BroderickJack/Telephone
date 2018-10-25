@@ -91,6 +91,10 @@ public class Client {
 			
 	}
 	
+	public String getEndpoint() {
+		return host + ":" + portNum;
+	}
+	
 	public void startClient() throws IOException {
 		System.out.println("Starting the client");
 		BufferedReader userInputBR = new BufferedReader(new InputStreamReader(System.in));

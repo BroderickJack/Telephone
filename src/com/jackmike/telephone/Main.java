@@ -87,12 +87,16 @@ public class Main {
 		if(originator) {
 			// Create the original message to send
 			try {
+				// Create the client
+				c1 = new Client(destHost, destPort);
+				
+				// Create the message
 				TELTP m = new TELTP(destPort);
 				m.setMessageId(messageId);
 				m.setBody("This is the message");
+				m.setToHost(c1.getEndpoint());
 
-				// Create the client and send the message
-				c1 = new Client(destHost, destPort);
+				// Send the message
 				c1.startClient();
 				c1.sendMessage(m);
 			} catch (IOException e) {
@@ -107,9 +111,11 @@ public class Main {
 					s1.startServer();
 					// Now we need to get the protocol information about the old message/
 					// Switch to a client and pass the message to the next person in the line 
+					System.out.println("The server ended");
 					TELTP newMessage = s1.getProtocol();
 					// We need to create a client to send the message to the next server
 					c2 = new Client(destHost, destPort);
+					c2.startClient();
 					c2.sendMessage(newMessage);
 				} catch (IOException e) {
 					e.printStackTrace();
