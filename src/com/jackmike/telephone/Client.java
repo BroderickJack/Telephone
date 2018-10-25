@@ -11,6 +11,8 @@ public class Client {
 	private String host;
 	private int portNum;
 	private TELTP protocol;
+	private BufferedReader br;
+	private PrintWriter out;
 	
 	public Client(String host, int portNum) throws IOException {
 
@@ -102,8 +104,8 @@ public class Client {
 		
 		Socket socket = new Socket(host, portNum);
 
-		BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-		PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+		br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+		out = new PrintWriter(socket.getOutputStream(), true);
 
 
 		// --------------- HANDSHAKE -------------------------------------
@@ -135,22 +137,24 @@ public class Client {
 			out.println("HELLO " + protocol.getVersion());
 			System.out.println("Client: HELLO " + protocol.getVersion());
 		}
+	}
 		
-		// ------------- END OF HANDSHAKE -----------------------------
-		System.out.print("Client: ");
-		String userInput = userInputBR.readLine();
-		while ( !userInput.equals("QUIT") ) {
-			out.println(userInput);
-			System.out.print("Client: ");
-			userInput = userInputBR.readLine(); 
-		}
+//		// ------------- END OF HANDSHAKE -----------------------------
+//		System.out.print("Client: ");
+//		String userInput = userInputBR.readLine();
+//		while ( !userInput.equals("QUIT") ) {
+//			out.println(userInput);
+//			System.out.print("Client: ");
+//			userInput = userInputBR.readLine(); 
+//		}
 		
+	public void endConnection() throws IOException {
 		
 		// -------------- TERMINATION ------------------------
 //		System.out.println("Ending the connection");
 		out.println("QUIT");
 		//System.out.println("Client: QUIT");
-		serverResponse = br.readLine();
+		String serverResponse = br.readLine();
 		System.out.println("Server: " + serverResponse);
 		
 		// The server should send back "GOODBYE";
@@ -160,5 +164,9 @@ public class Client {
 			System.out.println("Error During Termination");
 	}
 	
-	public TELTP getProtocol() { return protocol; }
+	public void sendMessage(TELTP m) throws IOException {
+		m.sendMessage(out); // Have the protocol send the message
+		endConnection();
+		// --  BODY   --
+	}
 }

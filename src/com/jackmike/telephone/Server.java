@@ -14,15 +14,19 @@ public class Server {
 	private int portNum;
 	private Vector<TELTPMessage> messages;
 	private TELTPMessage currentMessage;
+	private TELTP protocol;
 		
+	
+	public TELTP getProtocol() { return this.protocol; }
+	public Vector<TELTPMessage> getMessages() { return this.messages; }
+	
 	public Server(int portNum) throws IOException {
 		this.portNum = portNum;
-
 	}
 	
 	public void startServer() throws IOException {
 		System.out.println("SERVER");
-		TELTP protocol = new TELTP();
+		this.protocol = new TELTP();
 		
 		String data1 = ""; 
 		String data2 = ""; 
@@ -38,8 +42,7 @@ public class Server {
 		// Print the info of the client
 		// Do we need to check the source hostname?
 		System.out.println("Accept connection from client: " + socket.getRemoteSocketAddress().toString());
-
-		
+	
 		OutputStream os = socket.getOutputStream();
 		PrintWriter pw = new PrintWriter(os, true);
 		
@@ -127,6 +130,7 @@ public class Server {
 					
 					// Does the message body have to come after the headers??
 					System.out.println("Message Body: " + body);
+					this.protocol.setBody(body);
 					
 			}
 		
@@ -190,6 +194,47 @@ public class Server {
 				return 1;
 			case "MessageChecksum":
 				String checksum = splitHeader[1];
+				// Need to make sure the checksum is correct
+				return 1;
+				
+			case "FromHost":
+				String fromHost = splitHeader[1];
+				// ******** need to add to the protocol
+				this.currentMessage.setFromHost(fromHost);
+				return 1;
+				
+			case "System":
+				String system = splitHeader[1];
+				
+				// Update the current message
+				this.currentMessage.setSystem(system);
+				return 1;
+				
+			case "Program":
+				String program = splitHeader[1];
+				this.currentMessage.setProgram(program);
+				return 1;
+				
+			case "SendingTimestamp":
+				String sendingTimestamp = splitHeader[1];
+				this.currentMessage.setSendingTimestamp(sendingTimestamp);
+				return 1;
+				
+			case "HeadersChecksum":
+				String headersChecksum = splitHeader[1];
+				this.currentMessage.setHeadersChecksum(headersChecksum);
+				return 1;
+				
+			case "Warning":
+				String warning = splitHeader[1];
+				this.currentMessage.addWarning(warning);
+				return 1;
+				
+			case "Transform":
+				String transform = splitHeader[1];
+				this.currentMessage.addTransform(transform);
+				return 1;
+				
 			default:
 				// This is a part of the body of the message
 				return 0;

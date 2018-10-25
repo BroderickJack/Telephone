@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import com.jackmike.telephone.Client;
 import com.jackmike.telephone.Server;
+import com.jackmike.telephone.TELTP;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -79,25 +80,39 @@ public class Main {
 			validArgs = false;
 			
 		
-		Client c1;
+		Client c1, c2;
 		Server s1;
-		if(originator)
+		// We can try to handle multiple instances running
+		int messageId = 0;
+		if(originator) {
+			// Create the original message to send
+			try {
+				TELTP m = new TELTP(destPort);
+				m.setMessageId(messageId);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 			try {
 				c1 = new Client(destHost, destPort);
 				c1.startClient();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+		}
 		else {
 			while(true) {
 				try {
 					s1 = new Server(sourcePort);
 					s1.startServer();
+					// Now we need to get the protocol information about the old message/
+					// Switch to a client and pass the message to the next person in the line 
+					TELTP newMessage = s1.getProtocol();
+					// We need to create a client to send the message to the next server
+					c2 = new Client(destHost, destPort);
+					c2.sendMessage(newMessage);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				// Now we need to get the protocol information about the old message/
-				// Switch to a client and pass the message to the next person in the line 
 			}
 		}
 		

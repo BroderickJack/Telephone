@@ -21,7 +21,7 @@ public class TELTPMessage {
 	public void setSystem (String system) { this.system = system; }
 	public void setProgram (String program) { this.program = program; }
 	public void setAuthor(String author) { this.author = author; }
-	public void setSendingTimestamp(String sendingTimesetamp) { this.sendingTimestamp = sendingTimestamp; }
+	public void setSendingTimestamp(String sendingTimestamp) { this.sendingTimestamp = sendingTimestamp; }
 	public void setMessageID(int messageID) { this.messageID = messageID; }
 	public void setMessageChecksum(String messageChecksum) { this.messageChecksum = messageChecksum; }
 	public void setHeadersChecksum(String headersChecksum) { this.headersChecksum = headersChecksum; }
