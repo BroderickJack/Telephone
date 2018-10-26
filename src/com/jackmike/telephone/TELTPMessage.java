@@ -5,6 +5,7 @@ import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Vector;
+import java.util.Random;
 
 
 public class TELTPMessage {
@@ -15,7 +16,8 @@ public class TELTPMessage {
 	private int messageId, hop;
 
 	public TELTPMessage() {
-		this.messageId = 0;
+		Random random = new Random();
+		this.messageId = 1 + random.nextInt((100000 - 1) + 1);
 	}
 
 	public TELTPMessage(int messageId) {

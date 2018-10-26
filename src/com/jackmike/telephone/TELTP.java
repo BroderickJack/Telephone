@@ -57,7 +57,7 @@ public class TELTP {
 	public String getAuthor() { return this.author; }
 
 	public void setHop(int currentHop) { this.hop = currentHop + 1; } // Update the hop by 1
-	public void setMessageId(int messageId) { this.messageId = messageId; }
+	public void setMessageId(int messageId) { this.messageId = messageId + 1; }
 	public void setAuthor(String author) { this.author = author; }
 	public void addWarning(String newWarning) { this.warnings.addElement(newWarning); }
 	public void setBody(String body) { this.body = body; }
@@ -122,5 +122,6 @@ public class TELTP {
 	public String getJavaInfo(){
 		return "java/v" + System.getProperty("java.version");
 	}
+
 
 }

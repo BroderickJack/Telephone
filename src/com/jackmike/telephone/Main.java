@@ -11,6 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.Arrays;
 import java.util.Vector;
+import java.util.Random;
 
 public class Main {
 
@@ -87,7 +88,7 @@ public class Main {
 		Client c1, c2;
 		Server s1;
 		// We can try to handle multiple instances running
-		int messageId = 0;
+		int messageId = getRandomMessageID();
 		if(originator) {
 			// Create the original message to send
 			try {
@@ -192,6 +193,10 @@ public class Main {
 		// This method returns true if the argument "host" is an IPV4 address
 		// It returns false if host is a <hostname>
 		return false;
+	}
+	public static int getRandomMessageID(){
+		Random random = new Random();
+    return 1 + random.nextInt((10000 - 1) + 1);
 	}
 
 }
