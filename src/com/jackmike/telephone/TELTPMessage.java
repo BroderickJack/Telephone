@@ -1,18 +1,24 @@
 package com.jackmike.telephone;
+import java.io.PrintWriter;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Vector;
 
 
 public class TELTPMessage {
-	private String fromHost, toHost, system, program, author, sendingTimestamp, messageChecksum, headersChecksum;
+	private String fromHost, toHost, system, program, author, sendingTimestamp, headersChecksum;
+	private String messageChecksum;
 	private Vector<String> warnings, transform;
-	private int messageID, hop;
+	private int messageId, hop;
 	
 	public TELTPMessage() {
-		this.messageID = 0;
+		this.messageId = 0;
 	}
 	
-	public TELTPMessage(int messageID) {
-		this.messageID = messageID;
+	public TELTPMessage(int messageId) {
+		this.messageId = messageId;
 	}
 	
 	public void setHop(int hop) { this.hop = hop; }
@@ -22,10 +28,49 @@ public class TELTPMessage {
 	public void setProgram (String program) { this.program = program; }
 	public void setAuthor(String author) { this.author = author; }
 	public void setSendingTimestamp(String sendingTimestamp) { this.sendingTimestamp = sendingTimestamp; }
-	public void setMessageID(int messageID) { this.messageID = messageID; }
+	public void setMessageID(int messageId) { this.messageId = messageId; }
 	public void setMessageChecksum(String messageChecksum) { this.messageChecksum = messageChecksum; }
 	public void setHeadersChecksum(String headersChecksum) { this.headersChecksum = headersChecksum; }
 	public void addWarning(String warning) { this.warnings.addElement(warning); }
 	public void addTransform(String transform) { this.transform.addElement(transform); }
 	
+	public int getHop() { return this.hop; };
+	public String getMessageChecksum() { return this.messageChecksum; }
+	
+	public void sendMessage( PrintWriter pw ) {
+//		pw.println("DATA");
+//		System.out.println("Client: DATA");
+		pw.println("Hop: " + hop);
+		System.out.println("Client: Hop: " + hop);
+		System.out.println("Client: MessageId: " + messageId);
+		pw.println("MessageId: " + messageId);
+		System.out.println("Client: FromHost: " + fromHost.trim());
+//		System.out.println(fromHost);
+//		System.out.println(fromHost.trim());
+		pw.println("FromHost: " + fromHost);
+		System.out.println("Client: ToHost: " + toHost);
+		pw.println("ToHost: " + toHost);
+		System.out.println("Client: System: " + system);
+		pw.println("System: " + system);
+		System.out.println("Client: Program: " + program);
+		pw.println("Program: " + program);
+		System.out.println("Client: Author: " + author);
+		pw.println("Author: " + author);
+		System.out.println("Client: SendingTimestamp: " + sendingTimestamp);
+		pw.println("SendingTimestamp: " + sendingTimestamp);
+		System.out.println("Client: MessageChecksum: " + messageChecksum);
+		pw.println("MessageChecksum: " + messageChecksum);
+		if(warnings != null) {
+			for(int i = 0; i < warnings.size(); i++) {
+				pw.println("Warning: " + warnings);
+				System.out.println("Client: Warning: " + warnings);
+			}
+		}
+	
+		if( transform != null) {
+			pw.println("Transform: " + transform);
+			System.out.println("Client: Transform: " + transform);
+		}	
+	}
+
 }

@@ -31,8 +31,12 @@ public class TELTP {
 	private Vector<String> warnings = new Vector<String>(); // This is a list of all of the warning that have been added
 	
 	
-	public TELTP() {
+	public TELTP() throws IOException{
 		this.port = defaultPort;
+        InetAddress inetAddress = InetAddress.getLocalHost();
+//        System.out.println("IP Address:- " + inetAddress.getHostAddress());
+		this.fromHost = inetAddress.getHostAddress() + ":" + port;
+		this.author = currentAuthor;
 	}
 	
 	public TELTP(int p) throws IOException{
@@ -52,14 +56,14 @@ public class TELTP {
 	
 	public void setHop(int currentHop) { this.hop = currentHop + 1; } // Update the hop by 1
 	public void setMessageId(int messageId) { this.messageId = messageId; }
-	public void setAuthor(String oldAuthors) { this.author = oldAuthors + "/" + this.currentAuthor; }
+	public void setAuthor(String author) { this.author = author; }
 	public void addWarning(String newWarning) { this.warnings.addElement(newWarning); }
 	public void setBody(String body) { this.body = body; }
 	public void setToHost(String toHost) { this.toHost = toHost; }
 	
 	public void sendMessage( PrintWriter pw ) {
-		pw.println("DATA:");
-		System.out.println("Client: DATA:");
+//		pw.println("DATA");
+//		System.out.println("Client: DATA");
 		pw.println("Hop: " + hop);
 		System.out.println("Client: Hop: " + hop);
 		System.out.println("Client: MessageId: " + messageId);
@@ -74,10 +78,12 @@ public class TELTP {
 		pw.println("Program: " + program);
 		System.out.println("Client: Author: " + author);
 		pw.println("Author: " + author);
-		System.out.println("Client: SendingTimestamp: " + getCurrentTime());
-		pw.println("SendingTimestamp: " + getCurrentTime());
-		System.out.println("Client: MessageChecksum: " + getMessageChecksum());
-		pw.println("MessageChecksum: " + getMessageChecksum());
+		String ts = getCurrentTime();
+		System.out.println("Client: SendingTimestamp: " + ts);
+		pw.println("SendingTimestamp: " + ts);
+		String cs = InternetChecksum.calculateChecksum(body);
+		System.out.println("Client: MessageChecksum: " + cs);
+		pw.println("MessageChecksum: " + cs);
 		for(int i = 0; i < warnings.size(); i++) {
 			pw.println("Warning: " + warnings);
 			System.out.println("Client: Warning: " + warnings);
@@ -102,16 +108,4 @@ public class TELTP {
         return sdf.format(cal.getTime());
 	}
 	
-	public String getMessageChecksum() {
-		byte[] b = body.getBytes(Charset.forName("UTF-8"));
-		long sum = InternetChecksum.calculateChecksum(b);
-		byte[] sumBytes = longToBytes(sum);
-		return sumBytes.toString();
-	}
-	
-	public byte[] longToBytes(long x) {
-	    ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES);
-	    buffer.putLong(x);
-	    return buffer.array();
-	}
 }

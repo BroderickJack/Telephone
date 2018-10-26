@@ -99,7 +99,7 @@ public class Client {
 		System.out.println("Starting the client");
 		BufferedReader userInputBR = new BufferedReader(new InputStreamReader(System.in));
 
-		System.out.println("CLEINT");
+		System.out.println("CLIENT");
 		System.out.println("Creating socket to '" + host + "' on port " + portNum);
 
 		// If port number was not specified
@@ -141,6 +141,7 @@ public class Client {
 			out.println("HELLO " + protocol.getVersion());
 			System.out.println("Client: HELLO " + protocol.getVersion());
 		}
+		out.println("DATA");
 	}
 		
 //		// ------------- END OF HANDSHAKE -----------------------------
@@ -171,6 +172,11 @@ public class Client {
 	public void sendMessage(TELTP m) throws IOException {
 		m.sendMessage(out); // Have the protocol send the message
 		endConnection(); // End the connection 
+		// --  BODY   --
+	}
+	public void sendMessage(TELTPMessage m) throws IOException {
+		m.sendMessage(out); // Have the protocol send the message
+//		endConnection(); // End the connection 
 		// --  BODY   --
 	}
 }

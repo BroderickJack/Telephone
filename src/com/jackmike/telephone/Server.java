@@ -12,13 +12,13 @@ import java.util.Vector;
 public class Server {
 	private static boolean VERBOSE = true;
 	private int portNum;
-	private Vector<TELTPMessage> messages;
+	private Vector<TELTPMessage> messages = new Vector<TELTPMessage>();
 	private TELTPMessage currentMessage;
 	private TELTP protocol;
 		
 	
 	public TELTP getProtocol() { return this.protocol; }
-	public Vector<TELTPMessage> getMessages() { return this.messages; }
+	public Vector<TELTPMessage> getMessages() { System.out.println("Size: " + messages.size()) ;return this.messages; }
 	
 	public Server(int portNum) throws IOException {
 		this.portNum = portNum;
@@ -96,6 +96,7 @@ public class Server {
 					while ( readingData ) {
 						data1 = br.readLine();
 						System.out.println("Client: " + data1);
+//						System.out.println("Reading data1");
 						if (VERBOSE) {
 //							System.out.println("data1: " + data1);
 //							System.out.println("data1 == '' " + data1.equals(""));
@@ -125,14 +126,38 @@ public class Server {
 									body += data2 + "\n";
 						}
 						// Parse all three of the strings read in order
+//						System.out.println("Parsing data1");
 						if( parseHeader(data1, protocol) == 0)
-							body += data1 + "\n";
+							body += data1;
+						
+//						System.out.println("Current message hop: " + currentMessage.getHop());
+					
+//						System.out.println("Here");
+//					System.out.println("Current message == null: " + currentMessage == null);
+
 					}
 					
 					// Does the message body have to come after the headers??
-					System.out.println("Message Body: " + body);
+//					System.out.println("Message Body: " + body);
 					this.protocol.setBody(body);
 					
+//					System.out.println("HERE: " + currentMessage == null);
+
+					// Append the last "newMessage" to the Vector
+					if(currentMessage != null) {
+//						System.out.println("Current Message is not null");
+//						System.out.println("Adding message after with hop: " + currentMessage.getHop());
+						// Check the checksum
+						String cs = InternetChecksum.calculateChecksum(body);
+						String msg_cs = this.currentMessage.getMessageChecksum();
+						if (!cs.equals(msg_cs)) {
+							System.out.println("BAD CHECKSUM");
+						}
+						this.messages.addElement(currentMessage);
+					}
+//					return;
+//					socket.close();
+//					System.out.println("Closing the socket");
 			}
 		
 
@@ -146,10 +171,10 @@ public class Server {
 			// dont close anything for now....
 			//pw.close();
 			//socket.close();
+//			System.out.println("Current message == null: " + currentMessage == null);
 
 		}
-		socket.close();
-		System.out.println("Closing the socket");
+
 
 	}
 	
@@ -161,45 +186,64 @@ public class Server {
 		// RETURN
 		// 	- 0: If the "header" is not a header but is a part of the body of the message
 		//	- 1: If the "header" is actually a header
-		String[] splitHeader = header.split(":");
+		String[] splitHeader = header.split(":",2);
 		String headerName = splitHeader[0];
+		// Trim the split header
+		for (int i = 0; i < splitHeader.length; i++) {
+			splitHeader[i] = splitHeader[i].trim();
+		}
+		
+//		System.out.println("Header: " + headerName);
 		
 		switch (headerName) {
 			case "Hop":
 				int hop = Integer.parseInt(splitHeader[1].trim());
-				System.out.println("The current hop is: " + hop);
-				protocol.setHop(hop); // Trim removes leading and extra " "
-				System.out.println("The hop is now: " + protocol.getHop());
+//				System.out.println("The current hop is: " + hop);
+
+				if(currentMessage != null) {
+//					currentMessage.setHop(hop);
+//					System.out.println("Add message with hop: " + currentMessage.getHop());
+					this.messages.addElement(currentMessage);
+				}
 				
-				// Update the current message
-				this.currentMessage.setHop(hop);
+//				System.out.println("NEW MESSAGE");
+				
+				currentMessage = new TELTPMessage();
+				currentMessage.setHop(hop);
+//				System.out.println("Current Message Hop: " + currentMessage.getHop());
+				protocol.setHop(hop); // Trim removes leading and extra " "
+//				System.out.println("The hop is now: " + protocol.getHop());
 				return 1;
 			case "MessageId":
 				// If the current message is not void, append it to the messages vector
-				this.messages.addElement(this.currentMessage);
-				
 				int messageID = Integer.parseInt(splitHeader[1].trim());
+				currentMessage.setMessageID(messageID);
 				
 				// We will now create a new current message
-				System.out.println("The mssaageId is: " + messageID);
+//				System.out.println("The mssaageId is: " + messageID);
 				protocol.setMessageId(messageID);
 				// Create a "current message"
-				this.currentMessage = new TELTPMessage(messageID);
+//				currentMessage = new TELTPMessage(messageID);
 				return 1;
 			case "Author":
 				String oldAuthors = splitHeader[1];
-				System.out.println("Old Authors: " + oldAuthors);
+//				System.out.println("Old Authors: " + oldAuthors);
 				protocol.setAuthor(oldAuthors);
-				System.out.println("New Authors: " + protocol.getAuthor());
+//				System.out.println("New Authors: " + protocol.getAuthor());
 				
 				// Update the current message
 				this.currentMessage.setAuthor(oldAuthors);
 				return 1;
 			case "MessageChecksum":
 				String checksum = splitHeader[1];
+				this.currentMessage.setMessageChecksum(checksum);
 				// Need to make sure the checksum is correct
 				return 1;
 				
+			case "ToHost":
+				String toHost = splitHeader[1];
+				this.currentMessage.setToHost(toHost);
+				return 1;
 			case "FromHost":
 				String fromHost = splitHeader[1];
 				// ******** need to add to the protocol

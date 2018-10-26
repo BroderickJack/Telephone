@@ -1,12 +1,16 @@
 package com.jackmike.telephone;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 
 import com.jackmike.telephone.Client;
 import com.jackmike.telephone.Server;
 import com.jackmike.telephone.TELTP;
+import com.jackmike.telephone.InternetChecksum;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.Arrays;
+import java.util.Vector;
 
 public class Main {
 
@@ -99,28 +103,47 @@ public class Main {
 				// Send the message
 				c1.startClient();
 				c1.sendMessage(m);
+				
+				// Turn back into a server
+				s1 = new Server(sourcePort);
+				s1.startServer();
+				
+//				System.out.println("Finished recieving data");
+				// Now we need to print out data
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 
 		}
 		else {
-			while(true) {
+//			while(true) {
 				try {
 					s1 = new Server(sourcePort);
 					s1.startServer();
 					// Now we need to get the protocol information about the old message/
 					// Switch to a client and pass the message to the next person in the line 
-					System.out.println("The server ended");
-					TELTP newMessage = s1.getProtocol();
+//					System.out.println("The server ended");
+					Vector<TELTPMessage> messages = s1.getMessages();
+					TELTP p = s1.getProtocol();
 					// We need to create a client to send the message to the next server
 					c2 = new Client(destHost, destPort);
 					c2.startClient();
-					c2.sendMessage(newMessage);
+//					System.out.println("Started the client again");
+					
+//					System.out.println("Size: " + messages.size());
+					for(int i = 0; i < messages.size(); i++) {
+//						System.out.println("SENDING MESSAGE");
+						c2.sendMessage(messages.get(i));
+					}
+					// Send the information for the current hop
+//					System.out.println("Sending the protocol");
+					
+					p.setToHost(c2.getEndpoint());
+					c2.sendMessage(p);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-			}
+//			}
 		}
 		
 		

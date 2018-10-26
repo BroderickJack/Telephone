@@ -1,5 +1,7 @@
 package com.jackmike.telephone;
 
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 
 public class InternetChecksum {
 
@@ -17,7 +19,8 @@ public class InternetChecksum {
    * @param buf The message
    * @return The checksum
    */
-  public static long calculateChecksum(byte[] buf) {
+  public static String calculateChecksum(String msg) {
+	byte[] buf = msg.getBytes(Charset.forName("UTF-8"));
     int length = buf.length;
     int i = 0;
 
@@ -53,8 +56,16 @@ public class InternetChecksum {
     // Final 1's complement value correction to 16-bits
     sum = ~sum;
     sum = sum & 0xFFFF;
-    return sum;
 
+    String cs = Long.toHexString(sum);
+    // Add padding
+	int pad = 4 - cs.length();
+	for (int j = 0; j < pad; j++) {
+		cs = "0" + cs;
+	}
+	return cs.toUpperCase();
+    
   }
+
 
 }
