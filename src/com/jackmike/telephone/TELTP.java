@@ -8,7 +8,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
-import java.net.InetAddress; // Get the IP address 
+import java.net.InetAddress; // Get the IP address
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import com.jackmike.telephone.InternetChecksum;
@@ -18,10 +18,12 @@ public class TELTP {
 	private final String version = "1.7";
 	private final int defaultPort = 12345;
 	private final String currentAuthor = "MikeJack";
-	private String program = "Java/8/Update/191";
-	private String system = "Mac OS Mojave 10.14";
+	//private String program = "Java/8/Update/191";
+	private String program = getJavaInfo();
+	//private String system = "Mac OS Mojave 10.14";
+	private String system = getSysInfo();
 	private int port;
-	
+
 	// These are the header data values
 	private String fromHost, toHost, author;
 	private String sendingTimestamp, messageCSum, headersCSum;
@@ -29,8 +31,8 @@ public class TELTP {
 	private int messageId, hop;
 	private String body;
 	private Vector<String> warnings = new Vector<String>(); // This is a list of all of the warning that have been added
-	
-	
+
+
 	public TELTP() throws IOException{
 		this.port = defaultPort;
         InetAddress inetAddress = InetAddress.getLocalHost();
@@ -38,7 +40,7 @@ public class TELTP {
 		this.fromHost = inetAddress.getHostAddress() + ":" + port;
 		this.author = currentAuthor;
 	}
-	
+
 	public TELTP(int p) throws IOException{
 		this.port = p;
 		this.hop = 0;
@@ -53,14 +55,14 @@ public class TELTP {
 	public int getHop() { return this.hop; }
 	public int getMesssageId() { return this.messageId; }
 	public String getAuthor() { return this.author; }
-	
+
 	public void setHop(int currentHop) { this.hop = currentHop + 1; } // Update the hop by 1
 	public void setMessageId(int messageId) { this.messageId = messageId; }
 	public void setAuthor(String author) { this.author = author; }
 	public void addWarning(String newWarning) { this.warnings.addElement(newWarning); }
 	public void setBody(String body) { this.body = body; }
 	public void setToHost(String toHost) { this.toHost = toHost; }
-	
+
 	public void sendMessage( PrintWriter pw ) {
 //		pw.println("DATA");
 //		System.out.println("Client: DATA");
@@ -88,7 +90,7 @@ public class TELTP {
 			pw.println("Warning: " + warnings);
 			System.out.println("Client: Warning: " + warnings);
 		}
-	
+
 		if( transform != null) {
 			pw.println("Transform: " + transform);
 			System.out.println("Client: Transform: " + transform);
@@ -97,15 +99,22 @@ public class TELTP {
 		System.out.println("Client: " + this.body); // Send the body of the message
 		pw.println("\n.\n");
 		System.out.println("Client: \nClient: . \nClient:");
-		
-		
-		
+
+
+
 	}
-	
+
 	public String getCurrentTime() {
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss:SSS");
         return sdf.format(cal.getTime());
 	}
-	
+
+	public String getSysInfo(){
+		return System.getProperty("os.name") + " OS v" + System.getProperty("os.version");
+	}
+	public String getJavaInfo(){
+		return "java/v" + System.getProperty("java.version");
+	}
+
 }
