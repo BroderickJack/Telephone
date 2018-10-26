@@ -18,7 +18,7 @@ public class Server {
 		
 	
 	public TELTP getProtocol() { return this.protocol; }
-	public Vector<TELTPMessage> getMessages() { System.out.println("Size: " + messages.size()) ;return this.messages; }
+	public Vector<TELTPMessage> getMessages() { return this.messages; }
 	
 	public Server(int portNum) throws IOException {
 		this.portNum = portNum;

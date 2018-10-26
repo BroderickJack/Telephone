@@ -36,6 +36,8 @@ public class TELTPMessage {
 	
 	public int getHop() { return this.hop; };
 	public String getMessageChecksum() { return this.messageChecksum; }
+	public String getProgram() { return this.program; }
+	public String getSystem() { return this.system; }
 	
 	public void sendMessage( PrintWriter pw ) {
 //		pw.println("DATA");

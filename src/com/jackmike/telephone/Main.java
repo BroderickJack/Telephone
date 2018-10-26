@@ -108,6 +108,7 @@ public class Main {
 				s1 = new Server(sourcePort);
 				s1.startServer();
 				
+				analyzeMessages(s1.getMessages());
 //				System.out.println("Finished recieving data");
 				// Now we need to print out data
 			} catch (IOException e) {
@@ -148,7 +149,43 @@ public class Main {
 		
 		
 		
-		System.out.println(originator + ":" + sourceIP + ":" + destIP + ":" + port);
+//		System.out.println(originator + ":" + sourceIP + ":" + destIP + ":" + port);
+	}
+	
+	public static void analyzeMessages(Vector<TELTPMessage> messages) {
+		int numHops = 0;
+		String lan, plat;
+		Vector<String> languages = new Vector<String>();
+		Vector<String> platforms = new Vector<String>();
+		
+		for(int i = 0; i < messages.size(); i++) {
+			numHops++;
+			TELTPMessage m = messages.get(i);
+			lan = m.getProgram();
+			plat = m.getSystem();
+			
+			// Make sure they aren't already in the vector
+			if (!languages.contains(lan) ) 
+				languages.add(lan);
+			if (!platforms.contains(plat) )
+				platforms.add(plat);
+		}
+		
+		System.out.println("------ STATISTICS ------");
+		System.out.println("# of Hops: " + numHops);
+		
+		System.out.print("Languages: ");
+		for ( int i = 0; i < languages.size()-1; i++ ) {
+			System.out.print(languages.get(i) + "; ");
+		}
+		System.out.println(languages.get(languages.size()-1));
+		
+		System.out.print("Platforms: ");
+		for ( int i = 0; i < platforms.size()-1; i++ ) {
+			System.out.print(platforms.get(i) + "; ");
+		}
+		System.out.println(platforms.get(platforms.size()-1));
+		
 	}
 	
 	public static boolean isIPV4( String host ) {
