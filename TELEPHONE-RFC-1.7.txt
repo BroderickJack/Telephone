@@ -610,7 +610,7 @@ A.4 DATA Format
         Hop: 0
         MessageId: 3456
         FromHost: 192.168.0.1:34953
-	ToHost: 192.168.0.12:8888
+		ToHost: 192.168.0.12:8888
         System: LINIX/DEBIAN/R3.0
         Program: C++/GCC
         Author: Alex, J./Jacky Elton/David Wang

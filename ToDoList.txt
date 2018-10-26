@@ -1,5 +1,9 @@
 Telephone To-Do
-	- Print out message statistics
-	- Add the information of the server
-	- Port endpoint handling 
-		- There could be a different port for source and destination??
+	* Print out message statistics
+	* Add the information of the server
+	- Can you use the DATA command multiple times??
+	* Does the body of the message have to come after the headers?? I think so
+	* Port endpoint handling 
+		* There could be a different port for source and destination??
+
+* - DONE
