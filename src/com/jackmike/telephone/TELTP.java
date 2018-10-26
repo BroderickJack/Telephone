@@ -95,13 +95,16 @@ public class TELTP {
 			pw.println("Transform: " + transform);
 			System.out.println("Client: Transform: " + transform);
 		}
-		//pw.println("\n");
-		//System.out.println("Client: \n");
+
+		//if(hop == 0){
+			pw.print("\r\n");
+			System.out.print("Client: \n");
+		//}
 
 		pw.println(this.body); // Send the body of the message
 		System.out.println("Client: " + this.body); // Send the body of the message
 		pw.println("\n.\n");
-		System.out.println("Client: \nClient: . \nClient:");
+		System.out.println("Client:\nClient: . \nClient:");
 
 
 

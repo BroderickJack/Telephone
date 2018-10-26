@@ -98,14 +98,16 @@ public class Server {
 						System.out.println("Client: " + data1);
 //						System.out.println("Reading data1");
 						if (VERBOSE) {
-//							System.out.println("data1: " + data1);
-//							System.out.println("data1 == '' " + data1.equals(""));
-//							System.out.println("data1.length == " + data1.length());
+							// System.out.println("data1: " + data1);
+							// System.out.println("data1 == '' " + data1.equals(""));
+							// System.out.println("data1.length == " + data1.length());
 						}
 						if ( data1.equals("") ) {
+							//System.out.println("here");
 							// Read the next line to see if it is a "."
 							data2 = br.readLine();
 							System.out.println("Client: " + data2);
+
 							if ( data2.equals(".") ) {
 								data3 = br.readLine();
 								System.out.println("Client: " + data3);
@@ -121,9 +123,11 @@ public class Server {
 									if(parseHeader(data3, protocol) == 0)
 										body += data3 + "\n"; // We must append the line to the body of the message
 							}
-							else
+							else{
 								if(parseHeader(data2, protocol) == 0)
 									body += data2 + "\n";
+									//System.out.println("inside the first empty space, body: " + body);
+							}
 						}
 						// Parse all three of the strings read in order
 //						System.out.println("Parsing data1");

@@ -74,8 +74,11 @@ public class TELTPMessage {
 			pw.println("Transform: " + transform);
 			System.out.println("Client: Transform: " + transform);
 		}
-		pw.println("\n");
-		System.out.println("Client: \n");
+
+			//pw.println("test1 \n");
+			//System.out.println("Client1: \n");
+
+
 	}
 
 }
