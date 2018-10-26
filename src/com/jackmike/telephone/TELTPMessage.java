@@ -10,17 +10,18 @@ import java.util.Vector;
 public class TELTPMessage {
 	private String fromHost, toHost, system, program, author, sendingTimestamp, headersChecksum;
 	private String messageChecksum;
-	private Vector<String> warnings, transform;
+	private Vector<String> warnings = new Vector<String>();
+	private Vector<String> transform = new Vector<String>();
 	private int messageId, hop;
-	
+
 	public TELTPMessage() {
 		this.messageId = 0;
 	}
-	
+
 	public TELTPMessage(int messageId) {
 		this.messageId = messageId;
 	}
-	
+
 	public void setHop(int hop) { this.hop = hop; }
 	public void setFromHost(String fromHost) { this.fromHost = fromHost; }
 	public void setToHost (String toHost) { this.toHost = toHost; }
@@ -31,14 +32,14 @@ public class TELTPMessage {
 	public void setMessageID(int messageId) { this.messageId = messageId; }
 	public void setMessageChecksum(String messageChecksum) { this.messageChecksum = messageChecksum; }
 	public void setHeadersChecksum(String headersChecksum) { this.headersChecksum = headersChecksum; }
-	public void addWarning(String warning) { this.warnings.addElement(warning); }
+	public void addWarning(String warning) { this.warnings.add(warning); }
 	public void addTransform(String transform) { this.transform.addElement(transform); }
-	
+
 	public int getHop() { return this.hop; };
 	public String getMessageChecksum() { return this.messageChecksum; }
 	public String getProgram() { return this.program; }
 	public String getSystem() { return this.system; }
-	
+
 	public void sendMessage( PrintWriter pw ) {
 //		pw.println("DATA");
 //		System.out.println("Client: DATA");
@@ -68,11 +69,13 @@ public class TELTPMessage {
 				System.out.println("Client: Warning: " + warnings);
 			}
 		}
-	
+
 		if( transform != null) {
 			pw.println("Transform: " + transform);
 			System.out.println("Client: Transform: " + transform);
-		}	
+		}
+		pw.println("\n");
+		System.out.println("Client: \n");
 	}
 
 }

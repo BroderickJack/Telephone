@@ -15,73 +15,73 @@ public class Server {
 	private Vector<TELTPMessage> messages = new Vector<TELTPMessage>();
 	private TELTPMessage currentMessage;
 	private TELTP protocol;
-		
-	
+
+
 	public TELTP getProtocol() { return this.protocol; }
 	public Vector<TELTPMessage> getMessages() { return this.messages; }
-	
+
 	public Server(int portNum) throws IOException {
 		this.portNum = portNum;
 	}
-	
+
 	public void startServer() throws IOException {
 		System.out.println("SERVER");
 		this.protocol = new TELTP();
-		
-		String data1 = ""; 
-		String data2 = ""; 
+
+		String data1 = "";
+		String data2 = "";
 		String data3 = "";
 		String body = ""; // The body of the message that we will continually build
 		int parseRespone = -1; // The response of the parse method will be this (1-Header, 0-Part of the body)
-		
+
 		System.out.println("Creating server socket on port " + portNum);
 		ServerSocket serverSocket = new ServerSocket(portNum);
-		
+
 		Socket socket = serverSocket.accept();
-		
+
 		// Print the info of the client
 		// Do we need to check the source hostname?
 		System.out.println("Accept connection from client: " + socket.getRemoteSocketAddress().toString());
-	
+
 		OutputStream os = socket.getOutputStream();
 		PrintWriter pw = new PrintWriter(os, true);
-		
+
 		BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-		
+
 		// send message to the client
 //		pw.println("Connected to the server.");
 		// Initiate the handshake
 		pw.println("HELLO " + protocol.getVersion());
 		System.out.println("Server: HELLO " + protocol.getVersion());
-		
+
 		// Check to make su re the client sent the correct handshake pack
 		String clientResponse = br.readLine();
 		System.out.println("Client: " + clientResponse);
 		String[] output = clientResponse.split(" ");
-		
+
 		boolean badResponse = false;
-		// Check to see if the there are two parts to the message 
-		if(output.length != 2) 
+		// Check to see if the there are two parts to the message
+		if(output.length != 2)
 			badResponse = false;
-		else if(!output[0].equals("HELLO")) 
+		else if(!output[0].equals("HELLO"))
 			badResponse = false;
 		else if(!output[1].equals(protocol.getVersion()))
 			badResponse = false;
-		
+
 		if (badResponse) {
 			System.out.println("Ending the connection");
 			socket.close();
 		}
-		else 
+		else
 //			System.out.println("Handshake Successful");
-		
+
 		// After successful handshake, continually wait for client to send data
 		while (true) {
 //			System.out.println("Entering loop");
 			String str = br.readLine();
-			
+
 			System.out.println("Client: " + str);
-			
+
 			// Check to see what the input is
 			switch (str) {
 				case "QUIT": pw.println("GOODBYE");
@@ -89,7 +89,7 @@ public class Server {
 							 pw.close();
 //							 System.exit(1);
 							 return;
-				case "DATA": 
+				case "DATA":
 //					if (VERBOSE)
 //						System.out.println("Here");
 					boolean readingData = true;
@@ -106,13 +106,13 @@ public class Server {
 							// Read the next line to see if it is a "."
 							data2 = br.readLine();
 							System.out.println("Client: " + data2);
-							if ( data2.equals(".") ) { 
+							if ( data2.equals(".") ) {
 								data3 = br.readLine();
 								System.out.println("Client: " + data3);
 								if (data3.equals("") ) {
 									// We are at the end of the DATA message
 //									System.out.println("End of DATA message");
-									// We send success to the client and break 
+									// We send success to the client and break
 //									pw.println("SUCCESS");
 //									System.out.println("Server: SUCCESS");
 									readingData = false;
@@ -129,18 +129,18 @@ public class Server {
 //						System.out.println("Parsing data1");
 						if( parseHeader(data1, protocol) == 0)
 							body += data1;
-						
+
 //						System.out.println("Current message hop: " + currentMessage.getHop());
-					
+
 //						System.out.println("Here");
 //					System.out.println("Current message == null: " + currentMessage == null);
 
 					}
-					
+
 					// Does the message body have to come after the headers??
 //					System.out.println("Message Body: " + body);
 					this.protocol.setBody(body);
-					
+
 //					System.out.println("HERE: " + currentMessage == null);
 
 					// Append the last "newMessage" to the Vector
@@ -151,6 +151,7 @@ public class Server {
 						String cs = InternetChecksum.calculateChecksum(body);
 						String msg_cs = this.currentMessage.getMessageChecksum();
 						if (!cs.equals(msg_cs)) {
+							this.currentMessage.addWarning("Bad message checksum at hop " + this.currentMessage.getHop());
 							System.out.println("BAD CHECKSUM");
 						}
 						this.messages.addElement(currentMessage);
@@ -159,7 +160,7 @@ public class Server {
 //					socket.close();
 //					System.out.println("Closing the socket");
 			}
-		
+
 
 //			BufferedReader userInputBR = new BufferedReader(new InputStreamReader(System.in));
 //			String userInput = userInputBR.readLine();
@@ -167,7 +168,7 @@ public class Server {
 //			// print our message on the client outgoing br
 //			pw.println(userInput);
 //			System.out.println("Server: " + userInput);
-			
+
 			// dont close anything for now....
 			//pw.close();
 			//socket.close();
@@ -177,9 +178,9 @@ public class Server {
 
 
 	}
-	
+
 	private int parseHeader(String header, TELTP protocol) {
-		// This method takes the current line being read and returns updates the TELTP class to have 
+		// This method takes the current line being read and returns updates the TELTP class to have
 		// the information corresponding to the headers in the message
 		// 1. Split the string at : because the header is in the form
 		// 		<Header>: <value>
@@ -192,9 +193,9 @@ public class Server {
 		for (int i = 0; i < splitHeader.length; i++) {
 			splitHeader[i] = splitHeader[i].trim();
 		}
-		
+
 //		System.out.println("Header: " + headerName);
-		
+
 		switch (headerName) {
 			case "Hop":
 				int hop = Integer.parseInt(splitHeader[1].trim());
@@ -205,9 +206,9 @@ public class Server {
 //					System.out.println("Add message with hop: " + currentMessage.getHop());
 					this.messages.addElement(currentMessage);
 				}
-				
+
 //				System.out.println("NEW MESSAGE");
-				
+
 				currentMessage = new TELTPMessage();
 				currentMessage.setHop(hop);
 //				System.out.println("Current Message Hop: " + currentMessage.getHop());
@@ -218,7 +219,7 @@ public class Server {
 				// If the current message is not void, append it to the messages vector
 				int messageID = Integer.parseInt(splitHeader[1].trim());
 				currentMessage.setMessageID(messageID);
-				
+
 				// We will now create a new current message
 //				System.out.println("The mssaageId is: " + messageID);
 				protocol.setMessageId(messageID);
@@ -230,7 +231,7 @@ public class Server {
 //				System.out.println("Old Authors: " + oldAuthors);
 				protocol.setAuthor(oldAuthors);
 //				System.out.println("New Authors: " + protocol.getAuthor());
-				
+
 				// Update the current message
 				this.currentMessage.setAuthor(oldAuthors);
 				return 1;
@@ -239,7 +240,7 @@ public class Server {
 				this.currentMessage.setMessageChecksum(checksum);
 				// Need to make sure the checksum is correct
 				return 1;
-				
+
 			case "ToHost":
 				String toHost = splitHeader[1];
 				this.currentMessage.setToHost(toHost);
@@ -249,43 +250,43 @@ public class Server {
 				// ******** need to add to the protocol
 				this.currentMessage.setFromHost(fromHost);
 				return 1;
-				
+
 			case "System":
 				String system = splitHeader[1];
-				
+
 				// Update the current message
 				this.currentMessage.setSystem(system);
 				return 1;
-				
+
 			case "Program":
 				String program = splitHeader[1];
 				this.currentMessage.setProgram(program);
 				return 1;
-				
+
 			case "SendingTimestamp":
 				String sendingTimestamp = splitHeader[1];
 				this.currentMessage.setSendingTimestamp(sendingTimestamp);
 				return 1;
-				
+
 			case "HeadersChecksum":
 				String headersChecksum = splitHeader[1];
 				this.currentMessage.setHeadersChecksum(headersChecksum);
 				return 1;
-				
+
 			case "Warning":
 				String warning = splitHeader[1];
 				this.currentMessage.addWarning(warning);
 				return 1;
-				
+
 			case "Transform":
 				String transform = splitHeader[1];
 				this.currentMessage.addTransform(transform);
 				return 1;
-				
+
 			default:
 				// This is a part of the body of the message
 				return 0;
-				// This is now the message 
+				// This is now the message
 		}
 	}
 }

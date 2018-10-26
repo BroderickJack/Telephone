@@ -95,6 +95,9 @@ public class TELTP {
 			pw.println("Transform: " + transform);
 			System.out.println("Client: Transform: " + transform);
 		}
+		//pw.println("\n");
+		//System.out.println("Client: \n");
+
 		pw.println(this.body); // Send the body of the message
 		System.out.println("Client: " + this.body); // Send the body of the message
 		pw.println("\n.\n");
